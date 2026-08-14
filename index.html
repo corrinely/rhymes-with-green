@@ -5,99 +5,239 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Corrine Taylor</title>
 <meta name="description" content="Corrine Taylor — product leader based in NYC.">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400..700;1,400..700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #171717;
-    --body: #2b2b2b;
-    --link: #37352f;
-    --rule: #e9e9e7;
+    --primary: #1a1a1a;
+    --secondary: #775a19;
+    --cream: #f8f6f0;
+    --blue: #aebcd1;
+    --outline-variant: #c4c7c7;
+    --on-surface-variant: #444748;
   }
   * { box-sizing: border-box; }
   html, body {
     margin: 0;
     padding: 0;
-    background: #ffffff;
-    color: var(--body);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--cream);
+    color: var(--primary);
+    font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
-  main {
-    max-width: 700px;
+  .container {
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 88px 24px 120px;
+    padding: 0 24px;
   }
+  @media (min-width: 768px) {
+    .container { padding: 0 64px; }
+  }
+
+  /* Hero */
+  .hero-wrap { padding-top: 64px; }
+  .hero { display: flex; flex-direction: column; align-items: center; }
+  .crest-frame {
+    margin-bottom: 48px;
+  }
+  .crest-frame img {
+    display: block;
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    object-fit: cover;
+  }
+  @media (min-width: 768px) {
+    .crest-frame img { width: 160px; height: 160px; }
+  }
+
   h1 {
-    font-size: 44px;
-    font-weight: 800;
-    line-height: 1.15;
-    letter-spacing: -0.5px;
-    color: var(--ink);
+    font-family: 'Libre Caslon Text', Georgia, serif;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 54px;
+    letter-spacing: -0.01em;
+    text-align: center;
     margin: 0 0 32px;
+    text-wrap: balance;
   }
-  p {
-    font-size: 18px;
-    line-height: 1.6;
-    margin: 0 0 22px;
+  @media (min-width: 768px) {
+    h1 { font-size: 80px; line-height: 92px; letter-spacing: -0.02em; }
   }
-  a {
-    color: var(--link);
+
+  .bio {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .bio p {
+    font-size: 20px;
+    line-height: 32px;
+    margin: 0 0 24px;
+    text-align: left;
+  }
+  a.link {
+    color: var(--secondary);
     text-decoration: underline;
-    text-decoration-color: #b9b6ad;
-    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    transition: color 0.2s ease;
   }
-  a:hover { text-decoration-color: var(--link); }
+  a.link:hover { color: var(--primary); }
+
   h2 {
-    font-size: 26px;
-    font-weight: 800;
-    color: var(--ink);
-    margin: 56px 0 20px;
+    font-family: 'Libre Caslon Text', Georgia, serif;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 40px;
+    margin: 0 0 40px;
+    text-align: center;
+  }
+  @media (min-width: 768px) {
+    h2 { font-size: 40px; line-height: 48px; }
+  }
+
+  /* Currently Reading — full-bleed band */
+  .reading-band {
+    width: 100%;
+    position: relative;
+    background: rgba(174, 188, 209, 0.3);
+    padding: 96px 0;
+    margin: 96px 0;
+    border-top: 1px solid var(--primary);
+    border-bottom: 1px solid var(--primary);
+  }
+  .reading-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .reading-card {
+    position: relative;
+    width: 256px;
+    padding: 8px;
+    background: var(--cream);
+    border: 1px solid var(--primary);
+    box-shadow: 0 10px 25px -8px rgba(0,0,0,0.15);
   }
   .book-cover {
-    width: 180px;
-    height: auto;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
     display: block;
-  }
-  .dog-section {
-    margin-top: 64px;
-    padding-top: 40px;
-    border-top: 1px solid var(--rule);
-  }
-  .dog-photo {
     width: 100%;
-    max-width: 420px;
     height: auto;
-    border-radius: 6px;
+    border: 1px solid var(--outline-variant);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  }
+
+  /* Ladi Dadi */
+  .dog-outer { padding-bottom: 120px; }
+  .dog-wrap {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .dog-frame {
+    position: relative;
+    border: 1px solid var(--primary);
+    padding: 8px;
+    background: var(--cream);
+    box-shadow: 0 10px 25px -8px rgba(0,0,0,0.15);
+  }
+  .dog-frame .corner {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--primary);
+  }
+  .corner.tl { top: -1px; left: -1px; border-right: none; border-bottom: none; transform: translate(-4px, -4px); }
+  .corner.tr { top: -1px; right: -1px; border-left: none; border-bottom: none; transform: translate(4px, -4px); }
+  .corner.bl { bottom: -1px; left: -1px; border-right: none; border-top: none; transform: translate(-4px, 4px); }
+  .corner.br { bottom: -1px; right: -1px; border-left: none; border-top: none; transform: translate(4px, 4px); }
+  .dog-photo {
     display: block;
-    margin-bottom: 14px;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: 50% 25%;
+    border: 1px solid var(--outline-variant);
   }
   .dog-caption {
+    margin: 24px 0 0;
+    text-align: center;
     font-size: 16px;
-    color: #6b6b6b;
+    line-height: 26px;
+    font-style: italic;
+    color: var(--on-surface-variant);
+  }
+
+  /* Footer */
+  footer {
+    position: relative;
+    border-top: 1px solid var(--primary);
+    background: var(--cream);
+  }
+  footer .footer-inner {
+    padding: 64px 0;
+    text-align: center;
+  }
+  footer p {
     margin: 0;
+    color: var(--on-surface-variant);
+    font-size: 16px;
+    line-height: 26px;
   }
 </style>
 </head>
 <body>
+
 <main>
-  <h1>Hi, I&rsquo;m Corrine (rhymes with green).</h1>
+  <div class="container hero-wrap">
+    <div class="hero">
+      <div class="crest-frame">
+        <img src="images/crest.png" alt="Illustrated crest with a miniature pinscher and a pigeon flanking a stack of books, inside a black-and-white striped ring">
+      </div>
+      <h1>Hi, I&rsquo;m Corrine (rhymes with green).</h1>
+      <div class="bio">
+        <p>I&rsquo;m a product leader based in NYC with expertise in building and scaling digital products. My work sits at the intersection of strategy and execution &mdash; shaping complex problems into products people actually use.</p>
+        <p>You can view my work experience or connect with me on <a class="link" href="https://www.linkedin.com/in/corrinely" target="_blank" rel="noopener">LinkedIn</a>.</p>
+        <p>You can read my writing on <a class="link" href="https://www.corrinely.com" target="_blank" rel="noopener">corrinely.com</a>.</p>
+        <p>In my free time, you&rsquo;ll find me exploring Fort Greene Park with <a class="link" href="#ladi-dadi">my dog</a>, or volunteering at the <a class="link" href="https://wildbirdfund.org" target="_blank" rel="noopener">Wild Bird Fund</a>.</p>
+      </div>
+    </div>
+  </div>
 
-  <p>I&rsquo;m a product leader based in NYC with expertise in building and scaling digital products. My work sits at the intersection of strategy and execution &mdash; shaping complex problems into products people actually use.</p>
+  <div class="reading-band">
+    <div class="container">
+      <div class="reading-section">
+        <h2>Currently Reading</h2>
+        <div class="reading-card">
+          <img class="book-cover" src="images/world-of-yesterday.jpg" alt="The World of Yesterday by Stefan Zweig, newly translated by Anthea Bell">
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <p>You can view my work experience or connect with me on <a href="https://www.linkedin.com/in/corrinely" target="_blank" rel="noopener">LinkedIn</a>.</p>
-
-  <p>You can read my writing on <a href="https://www.corrinely.com" target="_blank" rel="noopener">corrinely.com</a>.</p>
-
-  <p>In my free time, you&rsquo;ll find me exploring Fort Greene Park with <a href="#ladi-dadi">my dog</a>, or volunteering at the <a href="https://wildbirdfund.org" target="_blank" rel="noopener">Wild Bird Fund</a>.</p>
-
-  <h2>Currently Reading</h2>
-  <img class="book-cover" src="images/world-of-yesterday.jpg" alt="The World of Yesterday by Stefan Zweig, newly translated by Anthea Bell">
-
-  <div class="dog-section" id="ladi-dadi">
-    <img class="dog-photo" src="images/ladi-dadi.jpg" alt="Ladi Dadi the dog at the beach">
-    <p class="dog-caption">Ladi Dadi, bff since 2020.</p>
+  <div class="container dog-outer">
+    <div class="dog-wrap" id="ladi-dadi">
+      <div class="dog-frame">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+        <img class="dog-photo" src="images/ladi-dadi.jpg" alt="Ladi Dadi the dog at the beach">
+      </div>
+      <p class="dog-caption">Ladi Dadi, bff since 2020.</p>
+    </div>
   </div>
 </main>
+
+<footer>
+  <div class="footer-inner">
+    <p>&copy; 2026. Built with &hearts; in Brooklyn.</p>
+  </div>
+</footer>
+
 </body>
 </html>
