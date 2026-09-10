@@ -1,348 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#111111">
-<title>Rogue Bocce Ruler</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>For the Garage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;overflow:hidden;background:#111;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
-#bapp{height:100%;height:100dvh;display:flex;flex-direction:column;background:#111;overflow:hidden;padding-top:env(safe-area-inset-top);}
-.bh{display:flex;align-items:center;padding:12px 16px;background:#1a1a1a;border-bottom:1px solid #2a2a2a;flex-shrink:0;}
-.bt{font-size:15px;font-weight:600;letter-spacing:0.08em;color:#d4a84b;}
-.bscr{display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;}.bscr.on{display:flex;}
-.bcam-foot{display:flex;align-items:center;padding:16px 20px;background:#1a1a1a;border-top:1px solid #2a2a2a;flex-shrink:0;gap:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom));}
-.bhint{font-size:13px;color:#666;font-family:monospace;flex:1;line-height:1.5;}
-.bshutter{width:64px;height:64px;border-radius:50%;background:#e8e8e8;border:none;cursor:pointer;position:relative;flex-shrink:0;transition:transform 0.1s;}
-.bshutter::after{content:'';position:absolute;inset:8px;border-radius:50%;background:#d4a84b;}
-.bshutter:active{transform:scale(0.9);}
-.bupload-btn{width:52px;height:52px;border-radius:50%;background:transparent;border:2px solid #3a3a3a;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform 0.1s;color:#666;}
-.bupload-btn:active{transform:scale(0.9);border-color:#d4a84b;color:#d4a84b;}
-.bupload-btn svg{width:22px;height:22px;}
-.bcarea{flex:1;position:relative;background:#000;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.bcarea canvas{max-width:100%;max-height:100%;display:block;object-fit:contain;touch-action:none;}
-.bpanel{background:#1a1a1a;padding:14px 18px;border-top:1px solid #2a2a2a;flex-shrink:0;padding-bottom:calc(14px + env(safe-area-inset-bottom));overflow-y:auto;max-height:42vh;}
-.bstep{font-size:14px;color:#d4a84b;font-family:monospace;font-weight:600;margin-bottom:4px;}
-.bplabel{font-size:13px;color:#888;font-family:monospace;line-height:1.5;margin-bottom:12px;}
-.bacts{display:flex;gap:10px;}
-.bbtn{padding:12px 20px;border-radius:10px;border:1px solid #3a3a3a;font-family:inherit;font-size:15px;font-weight:500;cursor:pointer;transition:opacity 0.15s,transform 0.1s;background:transparent;color:#888;min-height:48px;display:flex;align-items:center;justify-content:center;}
-.bbtn:active{transform:scale(0.97);}
-.bbtn-p{background:#d4a84b;color:#111;border-color:#d4a84b;flex:1;}
+  :root{
+    --bg:#f3f4f1; --surface:#fbfbf9; --ink:#1b1c19; --soft:#5b5f58;
+    --line:#dde0da; --accent:#235a4c; --accent-2:#2f6d5c;
+    --wash:rgba(35,90,76,.16);
+    --serif:"Newsreader","Iowan Old Style",Georgia,serif;
+    --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#14160f; --surface:#1b1e17; --ink:#eceee6; --soft:#9ba295;
+      --line:#2a2e26; --accent:#7cc3ac; --accent-2:#8fd0ba;
+      --wash:rgba(124,195,172,.16);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14160f; --surface:#1b1e17; --ink:#eceee6; --soft:#9ba295;
+    --line:#2a2e26; --accent:#7cc3ac; --accent-2:#8fd0ba;
+    --wash:rgba(124,195,172,.16);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);
+    font-size:19px;line-height:1.65;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:680px;margin:0 auto;padding-block:64px;padding-left:24px;padding-right:24px}
+  .sans{font-family:var(--sans)}
+  .eyebrow{font-family:var(--sans);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--soft);font-weight:600}
+  .crest{width:32px;height:32px;border:1.5px solid var(--accent);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-size:13px;
+    font-weight:600;letter-spacing:.03em;color:var(--accent);margin-bottom:26px}
 
-/* Verdict */
-.bverdict{font-size:18px;font-weight:700;color:#f0ece0;font-family:monospace;margin-bottom:10px;line-height:1.4;}
-.bverdict span{color:#d4a84b;}
+  .lead{color:var(--soft);font-size:18px;margin:14px 0 22px;font-style:italic}
+  .opener{font-size:clamp(20px,3.3vw,24px);line-height:1.46;color:var(--ink);margin:0 0 30px}
+  .hero-heard{margin:2px 0 20px}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(30px,6vw,46px);line-height:1.14;
+    letter-spacing:-.015em;margin:0 0 22px;text-wrap:balance}
+  .mark{background:linear-gradient(transparent 62%, var(--wash) 62%);padding:0 .05em}
+  .hero-body{font-size:20px;line-height:1.6;margin:0}
+  .hero-body + .hero-body{margin-top:16px}
 
-/* Rankings */
-.branklist{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
-.brankrow{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#222;border-radius:8px;border-left:4px solid #333;}
-.brankpos{font-size:17px;font-weight:700;width:28px;text-align:center;flex-shrink:0;}
-.brankdist{font-size:12px;color:#555;font-family:monospace;margin-left:auto;flex-shrink:0;}
+  .divider{display:flex;align-items:center;gap:16px;margin:52px 0 8px}
+  .divider .txt{font-family:var(--sans);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--soft);font-weight:600;white-space:nowrap}
+  .divider .ln{height:1px;background:var(--line);flex:1}
 
-.bnocam{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#555;font-size:15px;font-family:monospace;text-align:center;padding:20px;}
-.bdrop-zone{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.8);z-index:10;border:2px dashed #d4a84b;pointer-events:none;}
-.bdrop-zone.active{display:flex;}
-.bdrop-label{font-size:15px;color:#d4a84b;font-family:monospace;letter-spacing:0.1em;}
+  .acc{border-bottom:1px solid var(--line)}
+  .acc-head{width:100%;background:none;border:none;cursor:pointer;text-align:left;
+    display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+    padding:22px 0;color:var(--ink);font-family:var(--serif)}
+  .acc-head:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:3px}
+  .acc-title{font-size:23px;font-weight:500;letter-spacing:-.01em}
+  .acc-num{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--accent);
+    margin-right:14px;font-variant-numeric:tabular-nums}
+  .acc-icon{flex:0 0 auto;width:22px;height:22px;position:relative;transition:transform .35s ease;margin-top:6px}
+  .acc-icon:before,.acc-icon:after{content:"";position:absolute;background:var(--accent);border-radius:2px;
+    top:50%;left:50%;transition:opacity .3s ease}
+  .acc-icon:before{width:14px;height:2px;transform:translate(-50%,-50%)}
+  .acc-icon:after{width:2px;height:14px;transform:translate(-50%,-50%)}
+  .acc[open] .acc-icon:after{opacity:0}
+  .acc-panel{overflow:hidden;height:0;opacity:0;transition:height .4s ease,opacity .35s ease}
+  .acc[open] .acc-panel{opacity:1}
+  .acc-inner{padding:2px 0 30px}
+
+  .label{font-family:var(--sans);font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;margin:20px 0 7px}
+  .acc-inner p{margin:0 0 14px;font-size:18px}
+  .heard{border-left:2px solid var(--line);padding:2px 0 2px 18px;margin:4px 0}
+  .heard p{font-style:italic;color:var(--soft);margin:11px 0}
+  ul.q{list-style:none;padding:0;margin:6px 0 2px}
+  ul.q li{position:relative;padding-left:22px;margin:11px 0;line-height:1.5;font-size:17.5px}
+  ul.q li:before{content:"";position:absolute;left:2px;top:.62em;width:7px;height:7px;
+    border:1.5px solid var(--accent);border-radius:50%}
+
+  /* horizontal timeline */
+  .tl-cap{font-family:var(--sans);font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;margin:22px 0 4px}
+  .tl-wrap{position:relative;margin:0 -24px}
+  .tl-scroll{overflow-x:auto;overflow-y:hidden;padding:20px 24px 8px;-webkit-overflow-scrolling:touch}
+  .tl-wrap:after{content:"";position:absolute;top:14px;right:0;bottom:8px;width:46px;pointer-events:none;
+    background:linear-gradient(to right,transparent,var(--bg))}
+  .tl-hint{font-family:var(--sans);font-size:10.5px;letter-spacing:.1em;color:var(--soft);
+    font-weight:500;margin-left:8px;text-transform:none}
+  .tl-track{display:flex;gap:0;min-width:min-content;position:relative}
+  .tl-node{flex:0 0 190px;position:relative;padding-top:26px;padding-right:22px}
+  .tl-node:before{content:"";position:absolute;top:5px;left:0;right:0;height:2px;background:var(--line)}
+  .tl-node:last-child:before{right:calc(100% - 12px)}
+  .tl-dot{position:absolute;top:0;left:0;width:12px;height:12px;border-radius:50%;
+    background:var(--bg);border:2.5px solid var(--accent);box-sizing:border-box}
+  .tl-year{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--accent);
+    font-variant-numeric:tabular-nums;margin-bottom:8px}
+  .tl-work{font-size:15px;line-height:1.44;color:var(--ink);padding-right:6px}
+  .acc[open] .tl-node{animation:rise .5s ease both}
+  .acc[open] .tl-node:nth-child(2){animation-delay:.06s}
+  .acc[open] .tl-node:nth-child(3){animation-delay:.12s}
+  .acc[open] .tl-node:nth-child(4){animation-delay:.18s}
+  .acc[open] .tl-node:nth-child(5){animation-delay:.24s}
+  .acc[open] .tl-node:nth-child(6){animation-delay:.3s}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  .sign{font-size:19px;margin:52px 0 0}
+  .sign .salute{display:block;margin-bottom:10px}
+  .sign .name{display:block;margin-top:6px;color:var(--accent);font-style:italic}
+  .fn{font-family:var(--sans);font-size:13px;color:var(--soft);margin-top:30px;padding-top:14px;
+    border-top:1px solid var(--line);line-height:1.55}
+  footer{font-family:var(--sans);font-size:12.5px;color:var(--soft);margin-top:26px}
+
+  .fnref{position:relative;display:inline-block;color:var(--accent);font-style:normal;font-weight:600;
+    cursor:help;border-bottom:1px dotted var(--accent);line-height:1}
+  .fnref:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+  .fntip{position:absolute;left:0;bottom:calc(100% + 9px);width:min(300px,74vw);
+    background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:9px;
+    padding:11px 13px;font-family:var(--sans);font-size:13px;font-style:normal;font-weight:400;
+    line-height:1.5;letter-spacing:0;text-transform:none;box-shadow:0 10px 30px rgba(0,0,0,.16);
+    opacity:0;visibility:hidden;transform:translateY(5px);pointer-events:none;z-index:20;
+    transition:opacity .18s ease,transform .18s ease,visibility .18s ease}
+  .fntip:after{content:"";position:absolute;top:100%;left:var(--arrow,12px);border:6px solid transparent;
+    border-top-color:var(--surface)}
+  .fnref:hover .fntip,.fnref:focus .fntip,.fnref:focus-within .fntip,.fnref.show .fntip{
+    opacity:1;visibility:visible;transform:none}
+
+  .rise-in{animation:heroRise .7s cubic-bezier(.2,.7,.2,1) both}
+  .d1{animation-delay:.05s}.d2{animation-delay:.14s}.d3{animation-delay:.23s}.d4{animation-delay:.32s}
+  @keyframes heroRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none!important;transition:none!important}
+    .acc-panel{transition:none}
+  }
 </style>
 </head>
 <body>
-<canvas id="bfrz" style="display:none"></canvas>
-<input type="file" id="bfile" accept="image/*" style="display:none">
-<div id="bapp">
-  <div class="bh"><span class="bt">ROGUE BOCCE RULER</span></div>
 
-  <!-- CAMERA -->
-  <div class="bscr on" id="bs-cam">
-    <div style="flex:1;position:relative;min-height:0;display:flex;flex-direction:column;">
-      <video id="bvid" style="flex:1;width:100%;object-fit:cover;background:#000;min-height:0;display:block;" autoplay playsinline muted></video>
-      <div class="bdrop-zone" id="bdrop"><span class="bdrop-label">drop image here</span></div>
-    </div>
-    <div class="bcam-foot">
-      <div class="bhint">frame all balls overhead</div>
-      <button class="bupload-btn" onclick="bG('bfile').click()" title="Upload">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      </button>
-      <button class="bshutter" id="bshut" onclick="bCapture()" disabled></button>
-    </div>
+<div class="wrap">
+  <div class="crest rise-in">CT</div>
+  <h1 class="rise-in d1">Thank You</h1>
+  <p class="opener rise-in d2">A plain email felt like the wrong medium, the "Happy Friday Eve<span class="fnref" tabindex="0" role="button" aria-label="Show footnote">*<span class="fntip" role="tooltip">A bit I've fully committed to, it's not Thursday if my team hasn't endured this joke I insist on making.</span></span>" of follow-ups. So here's a page instead.</p>
+
+  <div class="hero-heard rise-in d2">
+    <div class="label">What I heard</div>
+    <div class="heard"><p>You have extensive expertise and experience in wealth management. You have a strategic vision and will be a strong leader in our business priorities. The scope of your role is quite large, and you need someone with deep product-management expertise to support the roadmap, delivery, and measurement of these strategic initiatives.</p></div>
   </div>
 
-  <!-- MEASURE -->
-  <div class="bscr" id="bs-meas">
-    <div class="bcarea"><canvas id="bmcv"></canvas></div>
-    <div class="bpanel">
-      <div class="bstep" id="bstep">step 1 of 3</div>
-      <div class="bplabel" id="bmlabel">tap the center of the pallino</div>
-      <div class="bverdict" id="bverdict" style="display:none;"></div>
-      <div class="branklist" id="branklist"></div>
-      <div class="bacts">
-        <button class="bbtn" onclick="bUndo()">Undo</button>
-        <button class="bbtn bbtn-p" onclick="bRetake()">New photo</button>
-      </div>
-    </div>
-  </div>
+  <p class="hero-body rise-in d3">That's me. I'm a quick study genuinely interested in this field with a strong ambition to learn more, and in the meantime fresh eyes are their own asset. They catch the assumptions insiders have stopped questioning.</p>
+  <p class="hero-body rise-in d4">I've been a trusted guardian of strategy my whole career: the product manager who locks down the detailed requirements, and who is savvy enough to know when to hit pause, when a simple ask from security threatens the entire reason a thing exists. I'm humble and honest about what I know and what I don't, and completely egoless in seeking guidance when I need it.</p>
+
+  <div class="divider rise-in d4"><span class="txt">More details, based on our conversation</span><span class="ln"></span></div>
+
+  <details class="acc" id="a1">
+    <summary class="acc-head"><span class="acc-title"><span class="acc-num">01</span>Managing the team</span><span class="acc-icon" aria-hidden="true"></span></summary>
+    <div class="acc-panel"><div class="acc-inner">
+      <div class="label">What I heard</div>
+      <div class="heard"><p>You have a global team that seems to get caught in quicksand between strategy and execution. You need someone who can be a product mentor for them and also help operationalize and manage their work. You need a roadmap and you need real progress toward your strategic goals.</p></div>
+      <div class="label">What I'd do</div>
+      <p>This is where my consulting experience benefits me. An agency on a rudderless project is an agency about to lose an engagement. I've developed a strong muscle for taking the highest-level idea, finding solutions worth pursuing, and selling them through the broader organization. I'm fearless about making, validating, and discarding assumptions to get to the 'what,' and I keep the team's calories on understanding users and delivering outcomes, not on delivery overhead.</p>
+      <div class="tl-cap">Proof: A career of shipping and mentoring <span class="tl-hint">scroll →</span></div>
+      <div class="tl-wrap"><div class="tl-scroll"><div class="tl-track">
+        <div class="tl-node"><span class="tl-dot"></span><div class="tl-year">2026</div><div class="tl-work">Launched a new crypto ETF</div></div>
+        <div class="tl-node"><span class="tl-dot"></span><div class="tl-year">2025</div><div class="tl-work">Launched a new ETF offering</div></div>
+        <div class="tl-node"><span class="tl-dot"></span><div class="tl-year">2024</div><div class="tl-work">Re-booted OTA service entitlements to a federated model; helped a multinational transition to it</div></div>
+        <div class="tl-node"><span class="tl-dot"></span><div class="tl-year">2021–2024</div><div class="tl-work">Mobile app for connected grills; an app for accessing content and earning CLEs; a video player and CLE accreditation system</div></div>
+        <div class="tl-node"><span class="tl-dot"></span><div class="tl-year">2019–2021</div><div class="tl-work">Lead-generation site and CMS for a healthcare provider; small-business directory for a credit provider</div></div>
+        <div class="tl-node"><span class="tl-dot"></span><div class="tl-year">2018–2019</div><div class="tl-work">Bank transfer for mobile apps; Touch ID sign-in for mobile apps</div></div>
+      </div></div></div>
+      <p style="margin-top:22px">I've mentored a whole flock of product managers and directly managed a few. I take great pride in watching them grow as product leaders who can think, not just execute. I go beyond the scope of my role to support that growth. I created 'Maker Weekly,' a weekly AI share-out and office hours where product folks see what's latest and get help from technical attendees as needed. I don't want to see anyone left behind because their current work doesn't involve the latest and greatest.</p>
+    </div></div>
+  </details>
+
+  <details class="acc" id="a2">
+    <summary class="acc-head"><span class="acc-title"><span class="acc-num">02</span>Achieving success</span><span class="acc-icon" aria-hidden="true"></span></summary>
+    <div class="acc-panel"><div class="acc-inner">
+      <div class="label">What I heard</div>
+      <div class="heard"><p>You want to pivot toward success being defined as actual business outcomes. It's frequently the missing piece of innovation groups, and where they lose credibility with the business. A focus elsewhere can cause a drift toward technology for technology's sake, and not for actual business needs and wants.</p></div>
+      <div class="label">What I'd do</div>
+      <p>It starts with truly understanding the user and the problem, and being unafraid to get creative about how to tackle it. From there, it's pairing what people tell you (users, sales, customer service) with what the data shows, and pushing past "what's happening" to "why."</p>
+      <div class="label">Proof: A track record of tackling hard questions</div>
+      <p>I have extensive experience working with clients and in-house stakeholders who have a well-crafted but high-altitude strategy they need someone to take and make actionable, without losing its meaning. Some broad questions I've helped distill to a solution with measurable impact:</p>
+      <ul class="q">
+        <li>How can we use AI to improve the PDLC so the new speed of build is racing toward real value, not output?</li>
+        <li>How can we better govern AI use across the organization, so teams aren't replicating work in silos, token spend is used efficiently, and compliance gets the governance visibility it needs? How do we determine ROI on our token spend for the CFO?</li>
+        <li>How can we support treasury-management users on mobile devices? What features matter?</li>
+        <li>How can we support small businesses who rely on our credit services facing incredible hardships during Covid?</li>
+      </ul>
+    </div></div>
+  </details>
+
+  <details class="acc" id="a3">
+    <summary class="acc-head"><span class="acc-title"><span class="acc-num">03</span>Navigating stakeholders &amp; the organization</span><span class="acc-icon" aria-hidden="true"></span></summary>
+    <div class="acc-panel"><div class="acc-inner">
+      <div class="label">What I heard</div>
+      <div class="heard"><p>JPMC is a large organization, and there are many teams we need to not only collaborate well with, but sell our ideas through to. These teams aren't required to partner with us and we must provide them a reason to. The crux of that is supporting shared goals and providing worthy support to enable them to execute.</p></div>
+      <div class="label">What I'd do</div>
+      <p>This is where, maybe counter-intuitively, I truly shine. I'm adept at reading stakeholder concerns and navigating gnarly politics and Byzantine approval processes. I won't lie, a lot of it is sheer tenacity. I'm a firm believer in "never be blocked." The rest is metrics. We all serve the same business, and alignment is easiest where the work visibly helps it. You may never convince a stakeholder that a computer should replace their paper process, but you can get them to agree an x% efficiency gain and an x% cost reduction are worth pursuing.</p>
+      <div class="label">Proof: Turning skeptics into partners</div>
+      <p>I'm currently navigating a client engagement with a mission to automate a KYC process that is entirely governed by humans who are resistant to change and concerned for their jobs. I'm also navigating the goals of this department against the goals of the executive team, which are not currently in lockstep. I root myself in logic and take small steps lightly. I listen, I care, and I keep my agenda to serving the customer and the business.</p>
+    </div></div>
+  </details>
+
+  <p class="sign rise-in d4"><span class="salute">Jeff —</span>Truly appreciate your time and really enjoyed our conversation. Your willingness to jump right in on what matters to you was so helpful. Hopefully I've got it right, I think this could be a great match.
+    <span class="name">— Corrine</span></p>
+
 </div>
 
 <script>
-const bG=id=>document.getElementById(id);
-let bStrm=null,bW=0,bH=0;
-let bPhase=0; // 0=pallino center, 1=pallino edge, 2=measure balls
-let bPal=null; // {cx,cy,r}
-let bPts=[];   // [{x,y,dist}] — ball edge taps
-let bDrag=null;
-
-function bShow(n){document.querySelectorAll('.bscr').forEach(s=>s.classList.remove('on'));bG('bs-'+n).classList.add('on');}
-const RC=['#f5c842','#c0c0c0','#cd7f32','#999','#999','#999','#999','#999'];
-
-function bPXY(e){
-  const cv=bG('bmcv'),r=cv.getBoundingClientRect();
-  return{x:(e.clientX-r.left)*(bW/r.width),y:(e.clientY-r.top)*(bH/r.height)};
-}
-
-async function bInit(){
-  try{
-    bStrm=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}},audio:false});
-    bG('bvid').srcObject=bStrm;bG('bvid').onloadedmetadata=()=>{bG('bshut').disabled=false;};
-    try{await bStrm.getVideoTracks()[0].applyConstraints({advanced:[{torch:true}]});}catch(e){}
-  }catch(e){
-    bG('bvid').style.display='none';
-    const d=document.createElement('div');d.className='bnocam';
-    d.innerHTML='<span style="font-size:28px;color:#333">⊘</span><span>No camera available.<br>Tap upload below.</span>';
-    bG('bs-cam').querySelector('div').insertBefore(d,bG('bdrop'));
-  }
-  bG('bfile').addEventListener('change',e=>{if(e.target.files[0])bLoadFile(e.target.files[0]);});
-  const app=bG('bapp');
-  app.addEventListener('dragover',e=>{e.preventDefault();bG('bdrop').classList.add('active');});
-  app.addEventListener('dragleave',e=>{if(!app.contains(e.relatedTarget))bG('bdrop').classList.remove('active');});
-  app.addEventListener('drop',e=>{e.preventDefault();bG('bdrop').classList.remove('active');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))bLoadFile(f);});
-  const cv=bG('bmcv');
-  cv.addEventListener('pointerdown',bDown);
-  cv.addEventListener('pointermove',bMove);
-  cv.addEventListener('pointerup',bUp);
-  cv.addEventListener('pointercancel',()=>{bDrag=null;});
-}
-
-function bLoadFile(file){
-  const MAX=1600,img=new Image();
-  img.onload=()=>{
-    let w=img.width,h=img.height;
-    if(w>MAX||h>MAX){const s=MAX/Math.max(w,h);w=Math.round(w*s);h=Math.round(h*s);}
-    bW=w;bH=h;const f=bG('bfrz');f.width=bW;f.height=bH;
-    f.getContext('2d').drawImage(img,0,0,bW,bH);bStart();URL.revokeObjectURL(img.src);
-  };
-  img.onerror=()=>URL.revokeObjectURL(img.src);
-  img.src=URL.createObjectURL(file);bG('bfile').value='';
-}
-function bCapture(){
-  const v=bG('bvid');if(!v.videoWidth)return;
-  bW=v.videoWidth;bH=v.videoHeight;const f=bG('bfrz');f.width=bW;f.height=bH;
-  f.getContext('2d').drawImage(v,0,0);bStart();
-}
-
-function bStart(){
-  bPhase=0;bPal=null;bPts=[];bDrag=null;
-  bG('bstep').textContent='step 1 of 3';
-  bG('bmlabel').textContent='tap the center of the pallino';
-  bG('bverdict').style.display='none';
-  bG('branklist').innerHTML='';
-  bShow('meas');
-  requestAnimationFrame(()=>bPaint());
-}
-
-/* ===== POINTER EVENTS ===== */
-function bDown(e){
-  e.preventDefault();
-  bG('bmcv').setPointerCapture(e.pointerId);
-  const p=bPXY(e);
-  bDrag={target:null,idx:-1,moved:false};
-
-  if(bPhase!==2)return;
-
-  // Check measurement points
-  for(let i=bPts.length-1;i>=0;i--){
-    if(Math.hypot(p.x-bPts[i].x,p.y-bPts[i].y)<35){
-      bDrag.target='pt';bDrag.idx=i;return;
-    }
-  }
-  // Check pallino edge
-  if(bPal){
-    const dc=Math.hypot(p.x-bPal.cx,p.y-bPal.cy);
-    if(Math.abs(dc-bPal.r)<25){bDrag.target='palR';return;}
-    if(dc<20){bDrag.target='palC';return;}
-  }
-}
-
-function bMove(e){
-  if(!bDrag||!bDrag.target)return;
-  e.preventDefault();
-  const p=bPXY(e);
-  bDrag.moved=true;
-  if(bDrag.target==='pt'){bPts[bDrag.idx].x=p.x;bPts[bDrag.idx].y=p.y;}
-  else if(bDrag.target==='palC'){bPal.cx=p.x;bPal.cy=p.y;}
-  else if(bDrag.target==='palR'){bPal.r=Math.max(5,Math.hypot(p.x-bPal.cx,p.y-bPal.cy));}
-  bRecalc();bPaint();bRank();
-}
-
-function bUp(e){
-  const p=bPXY(e);
-  const wasTarget=bDrag&&bDrag.target;
-  const wasMoved=bDrag&&bDrag.moved;
-  bDrag=null;
-  if(wasTarget)return; // handled by drag
-
-  // Clean tap
-  if(bPhase===0){
-    bPal={cx:p.x,cy:p.y,r:0};
-    bPhase=1;
-    bG('bstep').textContent='step 2 of 3';
-    bG('bmlabel').textContent='tap the edge of the pallino';
-    bPaint();return;
-  }
-  if(bPhase===1){
-    const r=Math.hypot(p.x-bPal.cx,p.y-bPal.cy);
-    if(r<3)return;
-    bPal.r=r;bPhase=2;
-    bG('bstep').textContent='step 3';
-    bG('bmlabel').textContent='tap the nearest edge of each ball';
-    bPaint();return;
-  }
-  if(bPhase===2&&!wasMoved){
-    // Don't add if near existing point or inside pallino
-    for(const pt of bPts){if(Math.hypot(p.x-pt.x,p.y-pt.y)<35)return;}
-    if(bPal&&Math.hypot(p.x-bPal.cx,p.y-bPal.cy)<bPal.r+15)return;
-    bPts.push({x:p.x,y:p.y,dist:0});
-    bRecalc();
-    bG('bstep').textContent='';
-    bG('bmlabel').textContent='drag any point to adjust';
-    bPaint();bRank();
-  }
-}
-
-/* ===== MATH ===== */
-function bNearPalEdge(mx,my){
-  const a=Math.atan2(my-bPal.cy,mx-bPal.cx);
-  return{x:bPal.cx+Math.cos(a)*bPal.r,y:bPal.cy+Math.sin(a)*bPal.r};
-}
-function bRecalc(){
-  bPts.forEach(m=>{const pe=bNearPalEdge(m.x,m.y);m.dist=Math.hypot(m.x-pe.x,m.y-pe.y);});
-  bPts.sort((a,b)=>a.dist-b.dist);
-}
-
-/* ===== UNDO ===== */
-function bUndo(){
-  if(bPts.length){bPts.pop();bRecalc();bPaint();bRank();
-    if(!bPts.length){bG('bstep').textContent='step 3';bG('bmlabel').textContent='tap the nearest edge of each ball';bG('bverdict').style.display='none';bG('branklist').innerHTML='';}
-  }else if(bPhase===2){bPal.r=0;bPhase=1;bG('bstep').textContent='step 2 of 3';bG('bmlabel').textContent='tap the edge of the pallino';bG('bverdict').style.display='none';bPaint();
-  }else if(bPhase===1){bPal=null;bPhase=0;bG('bstep').textContent='step 1 of 3';bG('bmlabel').textContent='tap the center of the pallino';bPaint();}
-}
-
-/* ===== PAINT ===== */
-function bPaint(){
-  const c=bG('bmcv');c.width=bW;c.height=bH;
-  const ctx=c.getContext('2d');
-  ctx.drawImage(bG('bfrz'),0,0);
-
-  if(bPhase===0){
-    ctx.save();ctx.fillStyle='rgba(0,0,0,0.4)';ctx.fillRect(0,bH/2-22,bW,44);
-    ctx.fillStyle='#aaa';ctx.font='600 14px monospace';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText('tap the center of the pallino',bW/2,bH/2);ctx.restore();return;
-  }
-  if(!bPal)return;
-
-  // Measurement lines
-  if(bPhase===2&&bPts.length){
-    bPts.forEach((m,i)=>{
-      const col=RC[i]||'#999';
-      const pe=bNearPalEdge(m.x,m.y);
-      ctx.save();
-      // Line
-      ctx.beginPath();ctx.moveTo(pe.x,pe.y);ctx.lineTo(m.x,m.y);
-      ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.globalAlpha=0.85;
-      ctx.setLineDash([8,5]);ctx.stroke();ctx.setLineDash([]);
-      // Rank pill
-      const mx=(pe.x+m.x)/2,my=(pe.y+m.y)/2;ctx.globalAlpha=1;
-      const lb='#'+(i+1);ctx.font='700 13px sans-serif';
-      const tw=ctx.measureText(lb).width,pw=tw+14,ph=22,rr=ph/2;
-      ctx.beginPath();ctx.moveTo(mx-pw/2+rr,my-ph/2);ctx.lineTo(mx+pw/2-rr,my-ph/2);
-      ctx.arc(mx+pw/2-rr,my,rr,-Math.PI/2,Math.PI/2);ctx.lineTo(mx-pw/2+rr,my+ph/2);
-      ctx.arc(mx-pw/2+rr,my,rr,Math.PI/2,3*Math.PI/2);ctx.closePath();
-      ctx.fillStyle=col;ctx.fill();ctx.fillStyle='#111';ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillText(lb,mx,my+0.5);
-      ctx.restore();
-
-      // Endpoint dot
-      ctx.save();
-      ctx.beginPath();ctx.arc(m.x,m.y,12,0,Math.PI*2);
-      ctx.fillStyle=col;ctx.globalAlpha=0.25;ctx.fill();
-      ctx.globalAlpha=1;ctx.beginPath();ctx.arc(m.x,m.y,5,0,Math.PI*2);
-      ctx.fillStyle=col;ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
-      ctx.restore();
+  (function(){
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.querySelectorAll("details.acc").forEach(function(d){
+      var panel = d.querySelector(".acc-panel");
+      var inner = d.querySelector(".acc-inner");
+      // custom animated open/close on <details>
+      d.querySelector(".acc-head").addEventListener("click", function(e){
+        e.preventDefault();
+        if(reduce){ d.open = !d.open; if(d.open){panel.style.height="auto";panel.style.opacity=1;} else {panel.style.height="0";panel.style.opacity=0;} return; }
+        if(d.open){
+          // closing
+          panel.style.height = inner.offsetHeight + "px";
+          requestAnimationFrame(function(){ panel.style.height = "0"; panel.style.opacity = 0; });
+          var done = function(){ d.open = false; panel.removeEventListener("transitionend", done); };
+          panel.addEventListener("transitionend", done);
+        } else {
+          d.open = true;
+          panel.style.height = "0"; panel.style.opacity = 0;
+          requestAnimationFrame(function(){
+            panel.style.height = inner.offsetHeight + "px";
+            panel.style.opacity = 1;
+          });
+          var settle = function(){ if(d.open) panel.style.height = "auto"; panel.removeEventListener("transitionend", settle); };
+          panel.addEventListener("transitionend", settle);
+        }
+      });
     });
-  }
 
-  // Pallino
-  const px=bPal.cx,py=bPal.cy;
-  ctx.save();
-  if(bPal.r>0){
-    ctx.beginPath();ctx.arc(px,py,bPal.r,0,Math.PI*2);
-    ctx.strokeStyle='rgba(255,255,255,0.8)';ctx.lineWidth=2.5;ctx.stroke();
-  }
-  ctx.strokeStyle='rgba(255,255,255,0.4)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);
-  ctx.beginPath();ctx.moveTo(px-16,py);ctx.lineTo(px+16,py);ctx.moveTo(px,py-16);ctx.lineTo(px,py+16);ctx.stroke();ctx.setLineDash([]);
-  ctx.beginPath();ctx.arc(px,py,5,0,Math.PI*2);
-  ctx.fillStyle='#f0ece0';ctx.fill();ctx.strokeStyle='#d4a84b';ctx.lineWidth=2;ctx.stroke();
-  ctx.fillStyle='#fff';ctx.font='600 10px monospace';ctx.textAlign='center';
-  ctx.fillText('PALLINO',px,py-(bPal.r>0?bPal.r+12:16));
-  ctx.restore();
-
-  // Phase 1 hint
-  if(bPhase===1){
-    ctx.save();ctx.fillStyle='rgba(0,0,0,0.35)';ctx.fillRect(0,bH/2-22,bW,44);
-    ctx.fillStyle='#aaa';ctx.font='600 14px monospace';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText('now tap the edge of the pallino',bW/2,bH/2);ctx.restore();
-  }
-}
-
-/* ===== RANKING + VERDICT ===== */
-function bRank(){
-  const list=bG('branklist');list.innerHTML='';
-  const vEl=bG('bverdict');
-  if(!bPts.length){vEl.style.display='none';return;}
-
-  const labs=['1st','2nd','3rd','4th','5th','6th','7th','8th'];
-
-  // Verdict
-  vEl.style.display='block';
-  if(bPts.length===1){
-    vEl.innerHTML='<span>#1</span> measured';
-  }else{
-    const closest=bPts[0],second=bPts[1];
-    const ratio=second.dist/closest.dist;
-    if(ratio<1.03){
-      vEl.innerHTML='<span>#1</span> and <span>#2</span> are nearly the same distance';
-    }else{
-      vEl.innerHTML='<span>#1</span> is closer by <span>'+ratio.toFixed(1)+'×</span>';
+    // footnote tooltip: tap to toggle (mouse/keyboard use hover/focus via CSS)
+    function placeTip(r){
+      var tip = r.querySelector(".fntip"); if(!tip) return;
+      var rect = r.getBoundingClientRect();
+      var vw = document.documentElement.clientWidth;
+      var tw = tip.offsetWidth;
+      var desired = rect.left - 12;
+      var clamped = Math.max(8, Math.min(desired, vw - 8 - tw));
+      tip.style.left = (clamped - rect.left) + "px";
+      tip.style.setProperty("--arrow", (rect.left - clamped + rect.width/2 - 6) + "px");
     }
-  }
-
-  // List
-  bPts.forEach((m,i)=>{
-    const col=RC[i]||'#999';
-    let rel;
-    if(i===0)rel='closest';
-    else{const r=m.dist/bPts[0].dist;rel=r<1.03?'~same':'~'+r.toFixed(1)+'× farther';}
-    const row=document.createElement('div');row.className='brankrow';row.style.borderLeftColor=col;
-    row.innerHTML=`<div class="brankpos" style="color:${col}">${labs[i]||'#'+(i+1)}</div>`+
-      `<div style="font-size:13px;color:#ccc;font-family:monospace;">Ball #${i+1}</div>`+
-      `<div class="brankdist">${rel}</div>`;
-    list.appendChild(row);
-  });
-}
-
-function bRetake(){bPhase=0;bPal=null;bPts=[];bDrag=null;bShow('cam');}
-bInit();
+    document.querySelectorAll(".fnref").forEach(function(r){
+      r.addEventListener("mouseenter", function(){ placeTip(r); });
+      r.addEventListener("focus", function(){ placeTip(r); });
+      r.addEventListener("click", function(e){ e.preventDefault(); e.stopPropagation(); placeTip(r); r.classList.toggle("show"); });
+      r.addEventListener("keydown", function(e){
+        if(e.key === "Enter" || e.key === " "){ e.preventDefault(); placeTip(r); r.classList.toggle("show"); }
+        if(e.key === "Escape"){ r.classList.remove("show"); r.blur(); }
+      });
+    });
+    document.addEventListener("click", function(){
+      document.querySelectorAll(".fnref.show").forEach(function(r){ r.classList.remove("show"); });
+    });
+  })();
 </script>
 </body>
 </html>
