@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#111111">
+<title>Rogue Bocce Ruler</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;background:#111;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
+#bapp{height:100%;height:100dvh;display:flex;flex-direction:column;background:#111;overflow:hidden;padding-top:env(safe-area-inset-top);}
+.bh{display:flex;align-items:center;padding:12px 16px;background:#1a1a1a;border-bottom:1px solid #2a2a2a;flex-shrink:0;}
+.bt{font-size:15px;font-weight:600;letter-spacing:0.08em;color:#d4a84b;}
+.bscr{display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;}.bscr.on{display:flex;}
+.bcam-foot{display:flex;align-items:center;padding:16px 20px;background:#1a1a1a;border-top:1px solid #2a2a2a;flex-shrink:0;gap:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom));}
+.bhint{font-size:13px;color:#666;font-family:monospace;flex:1;line-height:1.5;}
+.bshutter{width:64px;height:64px;border-radius:50%;background:#e8e8e8;border:none;cursor:pointer;position:relative;flex-shrink:0;transition:transform 0.1s;}
+.bshutter::after{content:'';position:absolute;inset:8px;border-radius:50%;background:#d4a84b;}
+.bshutter:active{transform:scale(0.9);}
+.bupload-btn{width:52px;height:52px;border-radius:50%;background:transparent;border:2px solid #3a3a3a;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform 0.1s;color:#666;}
+.bupload-btn:active{transform:scale(0.9);border-color:#d4a84b;color:#d4a84b;}
+.bupload-btn svg{width:22px;height:22px;}
+.bcarea{flex:1;position:relative;background:#000;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.bcarea canvas{max-width:100%;max-height:100%;display:block;object-fit:contain;touch-action:none;}
+.bpanel{background:#1a1a1a;padding:14px 18px;border-top:1px solid #2a2a2a;flex-shrink:0;padding-bottom:calc(14px + env(safe-area-inset-bottom));overflow-y:auto;max-height:42vh;}
+.bstep{font-size:14px;color:#d4a84b;font-family:monospace;font-weight:600;margin-bottom:4px;}
+.bplabel{font-size:13px;color:#888;font-family:monospace;line-height:1.5;margin-bottom:12px;}
+.bacts{display:flex;gap:10px;}
+.bbtn{padding:12px 20px;border-radius:10px;border:1px solid #3a3a3a;font-family:inherit;font-size:15px;font-weight:500;cursor:pointer;transition:opacity 0.15s,transform 0.1s;background:transparent;color:#888;min-height:48px;display:flex;align-items:center;justify-content:center;}
+.bbtn:active{transform:scale(0.97);}
+.bbtn-p{background:#d4a84b;color:#111;border-color:#d4a84b;flex:1;}
+
+/* Verdict */
+.bverdict{font-size:18px;font-weight:700;color:#f0ece0;font-family:monospace;margin-bottom:10px;line-height:1.4;}
+.bverdict span{color:#d4a84b;}
+
+/* Rankings */
+.branklist{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.brankrow{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#222;border-radius:8px;border-left:4px solid #333;}
+.brankpos{font-size:17px;font-weight:700;width:28px;text-align:center;flex-shrink:0;}
+.brankdist{font-size:12px;color:#555;font-family:monospace;margin-left:auto;flex-shrink:0;}
+
+.bnocam{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#555;font-size:15px;font-family:monospace;text-align:center;padding:20px;}
+.bdrop-zone{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.8);z-index:10;border:2px dashed #d4a84b;pointer-events:none;}
+.bdrop-zone.active{display:flex;}
+.bdrop-label{font-size:15px;color:#d4a84b;font-family:monospace;letter-spacing:0.1em;}
+</style>
+</head>
+<body>
+<canvas id="bfrz" style="display:none"></canvas>
+<input type="file" id="bfile" accept="image/*" style="display:none">
+<div id="bapp">
+  <div class="bh"><span class="bt">ROGUE BOCCE RULER</span></div>
+
+  <!-- CAMERA -->
+  <div class="bscr on" id="bs-cam">
+    <div style="flex:1;position:relative;min-height:0;display:flex;flex-direction:column;">
+      <video id="bvid" style="flex:1;width:100%;object-fit:cover;background:#000;min-height:0;display:block;" autoplay playsinline muted></video>
+      <div class="bdrop-zone" id="bdrop"><span class="bdrop-label">drop image here</span></div>
+    </div>
+    <div class="bcam-foot">
+      <div class="bhint">frame all balls overhead</div>
+      <button class="bupload-btn" onclick="bG('bfile').click()" title="Upload">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </button>
+      <button class="bshutter" id="bshut" onclick="bCapture()" disabled></button>
+    </div>
+  </div>
+
+  <!-- MEASURE -->
+  <div class="bscr" id="bs-meas">
+    <div class="bcarea"><canvas id="bmcv"></canvas></div>
+    <div class="bpanel">
+      <div class="bstep" id="bstep">step 1 of 3</div>
+      <div class="bplabel" id="bmlabel">tap the center of the pallino</div>
+      <div class="bverdict" id="bverdict" style="display:none;"></div>
+      <div class="branklist" id="branklist"></div>
+      <div class="bacts">
+        <button class="bbtn" onclick="bUndo()">Undo</button>
+        <button class="bbtn bbtn-p" onclick="bRetake()">New photo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const bG=id=>document.getElementById(id);
+let bStrm=null,bW=0,bH=0;
+let bPhase=0; // 0=pallino center, 1=pallino edge, 2=measure balls
+let bPal=null; // {cx,cy,r}
+let bPts=[];   // [{x,y,dist}] — ball edge taps
+let bDrag=null;
+
+function bShow(n){document.querySelectorAll('.bscr').forEach(s=>s.classList.remove('on'));bG('bs-'+n).classList.add('on');}
+const RC=['#f5c842','#c0c0c0','#cd7f32','#999','#999','#999','#999','#999'];
+
+function bPXY(e){
+  const cv=bG('bmcv'),r=cv.getBoundingClientRect();
+  return{x:(e.clientX-r.left)*(bW/r.width),y:(e.clientY-r.top)*(bH/r.height)};
+}
+
+async function bInit(){
+  try{
+    bStrm=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}},audio:false});
+    bG('bvid').srcObject=bStrm;bG('bvid').onloadedmetadata=()=>{bG('bshut').disabled=false;};
+    try{await bStrm.getVideoTracks()[0].applyConstraints({advanced:[{torch:true}]});}catch(e){}
+  }catch(e){
+    bG('bvid').style.display='none';
+    const d=document.createElement('div');d.className='bnocam';
+    d.innerHTML='<span style="font-size:28px;color:#333">⊘</span><span>No camera available.<br>Tap upload below.</span>';
+    bG('bs-cam').querySelector('div').insertBefore(d,bG('bdrop'));
+  }
+  bG('bfile').addEventListener('change',e=>{if(e.target.files[0])bLoadFile(e.target.files[0]);});
+  const app=bG('bapp');
+  app.addEventListener('dragover',e=>{e.preventDefault();bG('bdrop').classList.add('active');});
+  app.addEventListener('dragleave',e=>{if(!app.contains(e.relatedTarget))bG('bdrop').classList.remove('active');});
+  app.addEventListener('drop',e=>{e.preventDefault();bG('bdrop').classList.remove('active');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))bLoadFile(f);});
+  const cv=bG('bmcv');
+  cv.addEventListener('pointerdown',bDown);
+  cv.addEventListener('pointermove',bMove);
+  cv.addEventListener('pointerup',bUp);
+  cv.addEventListener('pointercancel',()=>{bDrag=null;});
+}
+
+function bLoadFile(file){
+  const MAX=1600,img=new Image();
+  img.onload=()=>{
+    let w=img.width,h=img.height;
+    if(w>MAX||h>MAX){const s=MAX/Math.max(w,h);w=Math.round(w*s);h=Math.round(h*s);}
+    bW=w;bH=h;const f=bG('bfrz');f.width=bW;f.height=bH;
+    f.getContext('2d').drawImage(img,0,0,bW,bH);bStart();URL.revokeObjectURL(img.src);
+  };
+  img.onerror=()=>URL.revokeObjectURL(img.src);
+  img.src=URL.createObjectURL(file);bG('bfile').value='';
+}
+function bCapture(){
+  const v=bG('bvid');if(!v.videoWidth)return;
+  bW=v.videoWidth;bH=v.videoHeight;const f=bG('bfrz');f.width=bW;f.height=bH;
+  f.getContext('2d').drawImage(v,0,0);bStart();
+}
+
+function bStart(){
+  bPhase=0;bPal=null;bPts=[];bDrag=null;
+  bG('bstep').textContent='step 1 of 3';
+  bG('bmlabel').textContent='tap the center of the pallino';
+  bG('bverdict').style.display='none';
+  bG('branklist').innerHTML='';
+  bShow('meas');
+  requestAnimationFrame(()=>bPaint());
+}
+
+/* ===== POINTER EVENTS ===== */
+function bDown(e){
+  e.preventDefault();
+  bG('bmcv').setPointerCapture(e.pointerId);
+  const p=bPXY(e);
+  bDrag={target:null,idx:-1,moved:false};
+
+  if(bPhase!==2)return;
+
+  // Check measurement points
+  for(let i=bPts.length-1;i>=0;i--){
+    if(Math.hypot(p.x-bPts[i].x,p.y-bPts[i].y)<35){
+      bDrag.target='pt';bDrag.idx=i;return;
+    }
+  }
+  // Check pallino edge
+  if(bPal){
+    const dc=Math.hypot(p.x-bPal.cx,p.y-bPal.cy);
+    if(Math.abs(dc-bPal.r)<25){bDrag.target='palR';return;}
+    if(dc<20){bDrag.target='palC';return;}
+  }
+}
+
+function bMove(e){
+  if(!bDrag||!bDrag.target)return;
+  e.preventDefault();
+  const p=bPXY(e);
+  bDrag.moved=true;
+  if(bDrag.target==='pt'){bPts[bDrag.idx].x=p.x;bPts[bDrag.idx].y=p.y;}
+  else if(bDrag.target==='palC'){bPal.cx=p.x;bPal.cy=p.y;}
+  else if(bDrag.target==='palR'){bPal.r=Math.max(5,Math.hypot(p.x-bPal.cx,p.y-bPal.cy));}
+  bRecalc();bPaint();bRank();
+}
+
+function bUp(e){
+  const p=bPXY(e);
+  const wasTarget=bDrag&&bDrag.target;
+  const wasMoved=bDrag&&bDrag.moved;
+  bDrag=null;
+  if(wasTarget)return; // handled by drag
+
+  // Clean tap
+  if(bPhase===0){
+    bPal={cx:p.x,cy:p.y,r:0};
+    bPhase=1;
+    bG('bstep').textContent='step 2 of 3';
+    bG('bmlabel').textContent='tap the edge of the pallino';
+    bPaint();return;
+  }
+  if(bPhase===1){
+    const r=Math.hypot(p.x-bPal.cx,p.y-bPal.cy);
+    if(r<3)return;
+    bPal.r=r;bPhase=2;
+    bG('bstep').textContent='step 3';
+    bG('bmlabel').textContent='tap the nearest edge of each ball';
+    bPaint();return;
+  }
+  if(bPhase===2&&!wasMoved){
+    // Don't add if near existing point or inside pallino
+    for(const pt of bPts){if(Math.hypot(p.x-pt.x,p.y-pt.y)<35)return;}
+    if(bPal&&Math.hypot(p.x-bPal.cx,p.y-bPal.cy)<bPal.r+15)return;
+    bPts.push({x:p.x,y:p.y,dist:0});
+    bRecalc();
+    bG('bstep').textContent='';
+    bG('bmlabel').textContent='drag any point to adjust';
+    bPaint();bRank();
+  }
+}
+
+/* ===== MATH ===== */
+function bNearPalEdge(mx,my){
+  const a=Math.atan2(my-bPal.cy,mx-bPal.cx);
+  return{x:bPal.cx+Math.cos(a)*bPal.r,y:bPal.cy+Math.sin(a)*bPal.r};
+}
+function bRecalc(){
+  bPts.forEach(m=>{const pe=bNearPalEdge(m.x,m.y);m.dist=Math.hypot(m.x-pe.x,m.y-pe.y);});
+  bPts.sort((a,b)=>a.dist-b.dist);
+}
+
+/* ===== UNDO ===== */
+function bUndo(){
+  if(bPts.length){bPts.pop();bRecalc();bPaint();bRank();
+    if(!bPts.length){bG('bstep').textContent='step 3';bG('bmlabel').textContent='tap the nearest edge of each ball';bG('bverdict').style.display='none';bG('branklist').innerHTML='';}
+  }else if(bPhase===2){bPal.r=0;bPhase=1;bG('bstep').textContent='step 2 of 3';bG('bmlabel').textContent='tap the edge of the pallino';bG('bverdict').style.display='none';bPaint();
+  }else if(bPhase===1){bPal=null;bPhase=0;bG('bstep').textContent='step 1 of 3';bG('bmlabel').textContent='tap the center of the pallino';bPaint();}
+}
+
+/* ===== PAINT ===== */
+function bPaint(){
+  const c=bG('bmcv');c.width=bW;c.height=bH;
+  const ctx=c.getContext('2d');
+  ctx.drawImage(bG('bfrz'),0,0);
+
+  if(bPhase===0){
+    ctx.save();ctx.fillStyle='rgba(0,0,0,0.4)';ctx.fillRect(0,bH/2-22,bW,44);
+    ctx.fillStyle='#aaa';ctx.font='600 14px monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('tap the center of the pallino',bW/2,bH/2);ctx.restore();return;
+  }
+  if(!bPal)return;
+
+  // Measurement lines
+  if(bPhase===2&&bPts.length){
+    bPts.forEach((m,i)=>{
+      const col=RC[i]||'#999';
+      const pe=bNearPalEdge(m.x,m.y);
+      ctx.save();
+      // Line
+      ctx.beginPath();ctx.moveTo(pe.x,pe.y);ctx.lineTo(m.x,m.y);
+      ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.globalAlpha=0.85;
+      ctx.setLineDash([8,5]);ctx.stroke();ctx.setLineDash([]);
+      // Rank pill
+      const mx=(pe.x+m.x)/2,my=(pe.y+m.y)/2;ctx.globalAlpha=1;
+      const lb='#'+(i+1);ctx.font='700 13px sans-serif';
+      const tw=ctx.measureText(lb).width,pw=tw+14,ph=22,rr=ph/2;
+      ctx.beginPath();ctx.moveTo(mx-pw/2+rr,my-ph/2);ctx.lineTo(mx+pw/2-rr,my-ph/2);
+      ctx.arc(mx+pw/2-rr,my,rr,-Math.PI/2,Math.PI/2);ctx.lineTo(mx-pw/2+rr,my+ph/2);
+      ctx.arc(mx-pw/2+rr,my,rr,Math.PI/2,3*Math.PI/2);ctx.closePath();
+      ctx.fillStyle=col;ctx.fill();ctx.fillStyle='#111';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(lb,mx,my+0.5);
+      ctx.restore();
+
+      // Endpoint dot
+      ctx.save();
+      ctx.beginPath();ctx.arc(m.x,m.y,12,0,Math.PI*2);
+      ctx.fillStyle=col;ctx.globalAlpha=0.25;ctx.fill();
+      ctx.globalAlpha=1;ctx.beginPath();ctx.arc(m.x,m.y,5,0,Math.PI*2);
+      ctx.fillStyle=col;ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
+      ctx.restore();
+    });
+  }
+
+  // Pallino
+  const px=bPal.cx,py=bPal.cy;
+  ctx.save();
+  if(bPal.r>0){
+    ctx.beginPath();ctx.arc(px,py,bPal.r,0,Math.PI*2);
+    ctx.strokeStyle='rgba(255,255,255,0.8)';ctx.lineWidth=2.5;ctx.stroke();
+  }
+  ctx.strokeStyle='rgba(255,255,255,0.4)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(px-16,py);ctx.lineTo(px+16,py);ctx.moveTo(px,py-16);ctx.lineTo(px,py+16);ctx.stroke();ctx.setLineDash([]);
+  ctx.beginPath();ctx.arc(px,py,5,0,Math.PI*2);
+  ctx.fillStyle='#f0ece0';ctx.fill();ctx.strokeStyle='#d4a84b';ctx.lineWidth=2;ctx.stroke();
+  ctx.fillStyle='#fff';ctx.font='600 10px monospace';ctx.textAlign='center';
+  ctx.fillText('PALLINO',px,py-(bPal.r>0?bPal.r+12:16));
+  ctx.restore();
+
+  // Phase 1 hint
+  if(bPhase===1){
+    ctx.save();ctx.fillStyle='rgba(0,0,0,0.35)';ctx.fillRect(0,bH/2-22,bW,44);
+    ctx.fillStyle='#aaa';ctx.font='600 14px monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('now tap the edge of the pallino',bW/2,bH/2);ctx.restore();
+  }
+}
+
+/* ===== RANKING + VERDICT ===== */
+function bRank(){
+  const list=bG('branklist');list.innerHTML='';
+  const vEl=bG('bverdict');
+  if(!bPts.length){vEl.style.display='none';return;}
+
+  const labs=['1st','2nd','3rd','4th','5th','6th','7th','8th'];
+
+  // Verdict
+  vEl.style.display='block';
+  if(bPts.length===1){
+    vEl.innerHTML='<span>#1</span> measured';
+  }else{
+    const closest=bPts[0],second=bPts[1];
+    const ratio=second.dist/closest.dist;
+    if(ratio<1.03){
+      vEl.innerHTML='<span>#1</span> and <span>#2</span> are nearly the same distance';
+    }else{
+      vEl.innerHTML='<span>#1</span> is closer by <span>'+ratio.toFixed(1)+'×</span>';
+    }
+  }
+
+  // List
+  bPts.forEach((m,i)=>{
+    const col=RC[i]||'#999';
+    let rel;
+    if(i===0)rel='closest';
+    else{const r=m.dist/bPts[0].dist;rel=r<1.03?'~same':'~'+r.toFixed(1)+'× farther';}
+    const row=document.createElement('div');row.className='brankrow';row.style.borderLeftColor=col;
+    row.innerHTML=`<div class="brankpos" style="color:${col}">${labs[i]||'#'+(i+1)}</div>`+
+      `<div style="font-size:13px;color:#ccc;font-family:monospace;">Ball #${i+1}</div>`+
+      `<div class="brankdist">${rel}</div>`;
+    list.appendChild(row);
+  });
+}
+
+function bRetake(){bPhase=0;bPal=null;bPts=[];bDrag=null;bShow('cam');}
+bInit();
+</script>
+</body>
+</html>
